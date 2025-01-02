@@ -22,7 +22,7 @@ pi@raspberrypi:~ $
 ```
 At this point you should be sitting at this terminal. Run the following commands one at a time:
 ```
-sudo apt update && upgrade -y 
+sudo apt update && sudo apt upgrade -y 
 ```
 This one will take a while
 ```
@@ -30,6 +30,11 @@ sudo apt install python3-pip
 sudo pip3 install inputs
 sudo pip3 install adafruit-circuitpython-servokit
 ```
+Then you need to run this to enable the I2C interface.  Look for Interface Options > I2C.  You can also use this tool to enable a wireless network connection under System Options > Wireless LAN. 
+```
+sudo raspi-config
+```
+
 ## Programming
 
 In the terminal type in: 
@@ -78,3 +83,11 @@ sudo systemctl enable arm.service
 sudo systemctl start arm.service
 ```
 At this point arm.py should always run on startup 
+
+## Usage
+
+
+
+## License
+
+This project is shared under the MIT License. Feel free to use, modify, and distribute it.
