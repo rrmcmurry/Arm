@@ -41,7 +41,7 @@ In the terminal type in:
 ```
 nano arm.py 
 ```
-Then open up the arm.py code in this repository. Highlight it all and hit copy or control-C so that it is in your clipboard. Back in the terminal just right click. You should see the contents of arm.py pasted into your nano session.  Hit Control O to write the contents to the file then hit Control X to exit. 
+Then open up the [arm.py code in this repository](https://github.com/rrmcmurry/Arm/raw/refs/heads/main/arm.py). Highlight it all and copy with Control-C so that it is in your clipboard. Back in the putty terminal just right click. You should see the contents of arm.py pasted into your nano session.  Hit Control O to write the contents to the file then hit Control X to exit. 
 
 now type:
 ```
