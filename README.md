@@ -76,7 +76,7 @@ WantedBy=multi-user.target
 ```
 Hit Control O to write the contents to the file. Hit Control X to exit.
 
-The the following commands:
+Type the following commands:
 ```
 sudo systemctl daemon-reload
 sudo systemctl enable arm.service
