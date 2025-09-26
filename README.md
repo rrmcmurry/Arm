@@ -12,25 +12,45 @@ I took a generic microUSB cable (the kind that is just for providing power) and 
 
 ## Initialization
 
-I downloaded and used the [raspberry pi imager](https://www.raspberrypi.com/software/) to flash the raspberry pi OS onto the raspberry pi's MicroSD card.  Go ahead and configure a user and enable SSH up front. I was running entirely headless (i.e. without a keyboard, monitor, mouse, etc) and I had to restart this process at least once to set up a user so I could use SSH to remote in.  Once the image is installed, plug it into the raspberry pi and turn it on. 
+I downloaded and used the [raspberry pi imager](https://www.raspberrypi.com/software/) to flash the raspberry pi OS Lite (64 bit) onto the raspberry pi's MicroSD card.  Go ahead and configure a user (named pi) with a password of your choosing and enable SSH up front. I was running entirely headless (i.e. without a keyboard, monitor, mouse, etc) and I had to restart this process at least once to set up a user so I could use SSH to remote in.  Once the image is installed, plug it into the raspberry pi and turn it on.  First time you turn it on it takes a while to expand the filesystem.  It reboots automatically a few times.
 
-I downloaded and used [putty](https://www.putty.org/) to remote into the raspberry pi over SSH. Host Name is "raspberrypi.local". Port is "22". Connection type is "SSH". Under terminal > features > Check the box next to "Disable application keypad mode".  Then back under Session select Default Settings and hit "Save".  Then hit "Open". 
+You can log into the terminal directly with a keyboard, mouse, and monitor... but I used ssh from a powershell terminal to remote into the raspberry pi. The command for this is: 
+```
+ssh pi@raspberrypi.local
+or
+ssh pi@192.168.x.x {the IP of the raspberry pi}
+```
+The IP address of the raspberry pi is displayed on the terminal if you plug in a monitor, or you can check DHCP logs.
+If you SSH in, you'll likely need to say that you trust this source and want to add it to your SSH configurations file. Then you'll log in with the password you set earlier:
 ```
 Login as: pi
 pi@raspberrypi.local's password: {If you didn't set this up earlier, SSH won't work... go back and reimage the SD card and configure a user}
 pi@raspberrypi:~ $ 
 ```
-At this point you should be sitting at this terminal. Run the following commands one at a time:
+At this point you should be sitting at this terminal. Run the following commands one at a time. This will take a while:
 ```
-sudo apt update && sudo apt upgrade -y 
+sudo apt update
+sudo apt upgrade -y
+```
+Disable services that slow down boot time:
+```
+sudo systemctl disable bluetooth.service
+sudo systemctl disable hciuart.service
+sudo systemctl disable avahi-daemon.service
+sudo systemctl disable wpa_supplicant.service {run this if you aren't using wifi}
+```
+Create a python virtual environment and switch into it
+```
+sudo apt install python3-venv -y
+python3 -m venv ~/armvenv
+source ~/armvenv/bin/activate
 ```
 This one will take a while
 ```
-sudo apt install python3-pip
-sudo pip3 install inputs
-sudo pip3 install adafruit-circuitpython-servokit
+sudo apt install pip3
+pip install adafruit-circuitpython-servokit evdev 
 ```
-Then you need to run this to enable the I2C interface.  Look for Interface Options > I2C.  You can also use this tool to enable a wireless network connection under System Options > Wireless LAN. 
+Then you need to run this to enable the I2C interface.  Look for Interface Options > I2C.  You can also use this tool to enable and set up your wireless network connection under System Options > Wireless LAN. 
 ```
 sudo raspi-config
 ```
@@ -41,7 +61,7 @@ In the terminal type in:
 ```
 nano arm.py 
 ```
-Then open up the [arm.py code in this repository](https://github.com/rrmcmurry/Arm/raw/refs/heads/main/arm.py). Highlight it all and copy with Control-C so that it is in your clipboard. Back in the putty terminal just right click. You should see the contents of arm.py pasted into your nano session.  Hit Control O to write the contents to the file then hit Control X to exit. 
+Then open up the [arm.py code in this repository](https://github.com/rrmcmurry/Arm/raw/refs/heads/main/arm.py). Highlight it all and copy with Control-C so that it is in your clipboard. Back in the terminal just right click. You should see the contents of arm.py pasted into your nano session.  Hit Control O to write the contents to the file then hit Control X to exit. 
 
 now type:
 ```
@@ -64,7 +84,7 @@ Description=Robot Arm Controller
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/pi/arm.py
+ExecStart=/home/pi/armvenv/bin/python /home/pi/arm.py
 WorkingDirectory=/home/pi
 StandardOutput=inherit
 StandardError=inherit
@@ -82,10 +102,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable arm.service
 sudo systemctl start arm.service
 ```
-At this point arm.py should always run on startup 
-
-## Usage
-
+At this point arm.py should start running automatically, and will always run on startup 
 
 
 ## License
