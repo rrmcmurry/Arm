@@ -104,6 +104,14 @@ sudo systemctl start arm.service
 ```
 At this point arm.py should start running automatically, and will always run on startup 
 
+## Harden for applicance use
+When you are satisfied that this is working as you intend:
+```
+sudo raspi-config
+```
+Select performance options > Overlay File System > Enable > Reboot
+This write protects the filesystem and makes it so the entire thing is loaded into RAM and never touches the files after boot.  This means effectively that you can pull the power cord and it won't mess anything up.
+That said... this also makes it so that you can't save any changes or updates... so if you need to make changes... you'll need to turn this back off before doing so.
 
 ## License
 
